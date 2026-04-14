@@ -1,0 +1,113 @@
+class Usuario:
+    def __init__(self, nombre):
+        self.nombre = nombre
+        self.cuentas = []
+
+class Cuenta:
+    def __init__(self, numero):
+        self.numero = numero
+        self.saldo = 0
+        self.movimientos = []
+
+def crear_usuario(lista_usuarios):
+    nombre = input("Nombre del usuario: ")
+    usuario = Usuario(nombre)
+    lista_usuarios.append(usuario)
+    print("Usuario creado")
+    return usuario
+
+def crear_cuenta(usuario):
+    numero = input("Número de cuenta: ")
+    cuenta = Cuenta(numero)
+    usuario.cuentas.append(cuenta)
+    print("Cuenta creada")
+    return cuenta
+
+def depositar(cuenta):
+    monto = int(input("Monto a depositar: "))
+    cuenta.saldo = cuenta.saldo + monto
+    cuenta.movimientos.append("Depósito de " + str(monto))
+    print("Depósito realizado")
+
+def retirar(cuenta):
+    monto = int(input("Monto a retirar: "))
+    
+    if monto <= cuenta.saldo:
+        cuenta.saldo = cuenta.saldo - monto
+        cuenta.movimientos.append("Retiro de " + str(monto))
+        print(" Retiro realizado")
+    else:
+        print("No hay suficiente saldo")
+
+def transferir(lista_usuarios, cuenta_origen):
+    numero_destino = input("Número de cuenta destino: ")
+
+    cuenta_destino = None
+
+    for usuario in lista_usuarios:
+        for cuenta in usuario.cuentas:
+            if cuenta.numero == numero_destino:
+                cuenta_destino = cuenta
+
+    if cuenta_destino == None:
+        print("Cuenta no encontrada")
+        return
+
+    monto = int(input("Monto a transferir: "))
+
+    if monto <= cuenta_origen.saldo:
+        cuenta_origen.saldo = cuenta_origen.saldo - monto
+        cuenta_destino.saldo = cuenta_destino.saldo + monto
+
+        cuenta_origen.movimientos.append("Transferencia enviada: " + str(monto))
+        cuenta_destino.movimientos.append("Transferencia recibida: " + str(monto))
+
+        print(" Transferencia realizada")
+    else:
+        print(" Saldo insuficiente")
+
+def ver_saldo(cuenta):
+    print(" Saldo actual:", cuenta.saldo)
+
+def ver_movimientos(cuenta):
+    print("Movimientos:")
+    for m in cuenta.movimientos:
+        print("-", m)
+
+usuarios = []
+
+usuario_actual = crear_usuario(usuarios)
+cuenta_actual = crear_cuenta(usuario_actual)
+
+while True:
+    print("MENÚ")
+    print("1. Depositar")
+    print("2. Retirar")
+    print("3. Transferir")
+    print("4. Ver saldo")
+    print("5. Ver movimientos")
+    print("6. Salir")
+
+    opcion = input("Seleccione: ")
+
+    if opcion == "1":
+        depositar(cuenta_actual)
+
+    elif opcion == "2":
+        retirar(cuenta_actual)
+
+    elif opcion == "3":
+        transferir(usuarios, cuenta_actual)
+
+    elif opcion == "4":
+        ver_saldo(cuenta_actual)
+
+    elif opcion == "5":
+        ver_movimientos(cuenta_actual)
+
+    elif opcion == "6":
+        print(" Saliendo...")
+        break
+
+    else:
+        print("Opción inválida")
